@@ -23,14 +23,11 @@
 //Sensor setup
 int proximityTrigger = A0;
 int proximityEcho = 9;
-int maxDistance = 200;
+int maxDistance = 1000;
 int distance;
 
-int proximitySampleRate = 200;
+int proximitySampleRate = 500;
 long lastReadingProx;
-
-int lastPollResult = 0;
-int differenceThreshold = 5; //check against this to see if rocking
 
 NewPing proximity1(proximityTrigger, proximityEcho, maxDistance);
 
@@ -86,58 +83,27 @@ void loop() {
     
     distance = proximity1.ping_cm();
 
-    int difference = distance-lastPollResult;
-
-    //Make the difference positive
-    if(difference < 0){
-      difference *= -1;
-    }
-
     //Debugging statements
-    Serial.print("proximity: "); Serial.print(distance);
-    Serial.print("     last result:"); Serial.print(lastPollResult);
-    Serial.print("     difference:"); Serial.println(difference);
+    Serial.print("proximity: "); 
+    Serial.println(distance);
 
-
-    if(!speakerInProgress){ //if the speaker code is not currently already in process of being executed, proceed.
-      //If the difference is less than 5 between polls, assume rocking has stopped and make the baby cry after a short delay
-      if(difference < differenceThreshold){
-        
-        speakerInProgress = true;
-        
-        rocking = false;
-        lastReadingSpeaker = millis();
-  
-      }else{ //Else the crib is rocking and the baby quiets after a short delay (TODO: Make lullaby play as well)
-        
-        speakerInProgress = true;
-        
-        rocking = true;
-        lastReadingSpeaker = millis();
-        
+      if(distance <= 40){
+    for (int i = 0; i < length; i++) {
+      if (notes[i] == ' ') {
+        delay(beats[i] * tempo); // rest
+      } else {
+        playNote(notes[i], beats[i] * tempo);
       }
+      
+      // pause between notes
+      delay(tempo / 2); 
     }
-
-    //Recap milliseconds for poll frequency
-    lastReadingProx = millis();
-    //Recap current distance to test difference
-    lastPollResult = distance;     
   }
   
-  //Allow a small amount of time to pass before we change states
-  if(millis()-lastReadingSpeaker>=speakerSampleRate){
-    if(rocking){
-      noTone(speakerPin);
-      speakerInProgress = false;
-      
-      lastReadingSpeaker = millis();
-      
-    }else{
-      tone(speakerPin, 500);
-      speakerInProgress = false;
-      
-      lastReadingSpeaker = millis();
-      
-    }
-  } 
+    //Recap milliseconds for poll frequency
+    lastReadingProx = millis(); 
+
+  }
+  
+ 
 }
