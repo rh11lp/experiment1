@@ -14,18 +14,16 @@ int distance;
 
 int proximitySampleRate = 500;
 long lastReadingProx;
-int songLength = 103000; //1m and 43s
 
 NewPing proximity1(proximityTrigger, proximityEcho, maxDistance);
 
 //Speaker setup
 int speakerPin = 10;
-int speakerSampleRate = 1000;
-long lastReadingSpeaker;
-bool rocking = false;
 
 bool speakerInProgress = false;
 long capTimeStart;
+int songLength = 103000; //1m and 43s
+
 void setup() {
   
   pinMode(speakerPin, OUTPUT);
@@ -43,8 +41,8 @@ void loop() {
     distance = proximity1.ping_cm();
 
     //Debugging statements
-//    Serial.print("proximity: "); 
-//    Serial.println(distance);
+/*    Serial.print("proximity: "); 
+    Serial.println(distance);*/
 
     
    if(distance >= 85 && distance <= 110){
@@ -54,6 +52,7 @@ void loop() {
         speakerInProgress = true;
         capTimeStart = millis();
       }else {
+        //debugging printouts
 /*        Serial.print(millis());
         Serial.print("ms - ");
         Serial.print(capTimeStart);
@@ -63,7 +62,6 @@ void loop() {
         Serial.println(songLength);*/
         if(millis()-capTimeStart>=songLength){
           speakerInProgress = false;
-          Serial.println("Is this never happening??");
         }
       }
     }
