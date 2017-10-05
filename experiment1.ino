@@ -17,16 +17,12 @@ long lastReadingProx;
 
 NewPing proximity1(proximityTrigger, proximityEcho, maxDistance);
 
-//Speaker setup
-int speakerPin = 10;
-
 bool speakerInProgress = false;
 long capTimeStart;
 int songLength = 103000; //1m and 43s
 
 void setup() {
   
-  pinMode(speakerPin, OUTPUT);
   Serial.begin(9600);
   
 }
